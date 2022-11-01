@@ -1,0 +1,20 @@
+
+.image{
+  margin: 2px;
+  border-color: black;
+    border-style: solid;
+    border-radius: 15px;
+   height: 100px;
+   width: 140px;
+   cursor: pointer;
+}
+.reverse{
+  
+   margin: 2px;
+  border-color: black;
+    border-style: solid;
+    border-radius: 15px;
+   height: 100px;
+   width: 140px;
+ 
+}
