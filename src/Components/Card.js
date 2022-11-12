@@ -1,18 +1,36 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import './Card.css';
+import icon from './Assets/Images/Cover.png';
+import click from './Assets/Audio/click.wav';
 
-const Card = ({ image, hideCats,   cat, onSelectCards }) => {
-  const [view, setView] = useState(false);
+const Card = ({flipped, cat, onSelectCards, disabled }) => {
 
-  const showImage = (cat) => {
-    onSelectCards(cat)
-    setView(true)
-    // setTimeout(setView(false), 1000);
+  const clickAudio = () => {
+    const audio = new Audio(click)
+    audio.play()
+  };
+
+  const showImage = () => {
+    // clickAudio()
+    if (!disabled) {
+      onSelectCards(cat)
+    }
   };
 
   return (
-    <div onClick={() => showImage(cat)} className={view ? 'hide-card' : 'card'}>
-      <img className={hideCats && !view ? 'image-hide' : 'image'} alt='cat' src={image} />
+    <div className='card'>
+      <div className={flipped ? "flipped" : ""}>
+        <img
+          className='front'
+          src={cat.image}
+          alt='front card'
+        />
+        <img
+          className='back'
+          src={icon} onClick={() => showImage()}
+          alt='cat icon'
+        />
+      </div>
     </div>
   )
 };

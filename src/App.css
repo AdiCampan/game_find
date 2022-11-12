@@ -1,24 +1,110 @@
+@import url('https://fonts.googleapis.com/css2?family=Libre+Barcode+39+Text&family=Pacifico&family=Roboto:wght@300&family=Rubik+Bubbles&family=Rubik+Moonrocks&display=swap');
+
 body{
-  background-image: url(./Components/Assets/cat-ears-2.png) ;
-  /* background-color: rgb(77, 36, 61); */
-  
- 
+  background-image: url('./Components/Assets/Images/cat-feet.jpg');
+  background-size:contain;
 }
-.app{
+
+.App {
   display: flex;
-  justify-content: center;
+  max-width: 860px;
+  margin: 40px auto;
   align-items: center;
-  flex-direction:column ;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
 }
 .title{
-  color: black;
+  font-family: Rubik Moonrocks, sans-serif;
+  color: #f0c8d5;
+  font-size: 50px;
 }
-.game{
-  display: flex;
-  flex-wrap: wrap;
-  background-color: brown;
-  height: 458px;
-  width: 758px;
+.footprint{
+  height: 157px;
+  width: 151px;
+  margin-top: -110px;
+  margin-bottom: -112px;
+  cursor: pointer;
+  margin-right: 51px;
+  transition: transform .2s, 0.5s;
+}
+.footprint:hover{
+  transform: scale(1.2);
+}
+
+
+button {
+  background-color: #a76a8f;
+  border: 2px solid #fff;
+  padding: 6px 12px;
   border-radius: 15px;
-  justify-content: space-evenly;
+  color: #fff;
+  font-weight: bold;
+  font-size: 1em;
+}
+button:hover {
+  background: #c23866;
+  color: #fff;
+  animation: zoom 0.5s ease-in;
+}
+@keyframes zoom {
+  100%{
+    transform: scale(1.5);
+  }
+}
+.card-grid {
+  width:fit-content;
+  margin-top: 21px;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+  grid-gap: 12px;
+  justify-items: center;
+}
+.moves{
+  margin-left: 600px;
+  font-size: x-large;
+  font-family: fantasy;
+  color: #f3cfe4;
+  margin-top: auto;
+    margin-bottom: auto;
+}
+.well-done{
+  font-family: Rubik Bubbles, sans-serif;
+  position: absolute;
+  color: #eb0feb;
+  z-index: 999;
+  font-size: xx-large;
+  font-weight: bolder;
+  font-size: 100px;
+  animation: 2s anim-popoutin ease infinite;
+}
+@keyframes anim-popoutin {
+  0% {
+    color: black;
+    transform: scale(0);
+    opacity: 0;
+    text-shadow: 0 0 0 rgba(0, 0, 0, 0);
+  }
+  25% {
+    color: red;
+    transform: scale(2);
+    opacity: 1;
+    text-shadow: 3px 10px 5px rgba(0, 0, 0, 0.5);
+  }
+  50% {
+    color: rgb(250, 116, 116);
+    transform: scale(1);
+    opacity: 1;
+    text-shadow: 1px 0 0 rgba(0, 0, 0, 0);
+  }
+  100% {
+    /* animate nothing to add pause at the end of animation */
+    transform: scale(1);
+    opacity: 1;
+    text-shadow: 1px 0 0 rgba(0, 0, 0, 0);
+  }
+}
+
+.well-done-hide{
+  display: none;
 }

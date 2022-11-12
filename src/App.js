@@ -1,111 +1,137 @@
-import cat1 from './Components/Assets/cat1.jpg';
-import cat2 from './Components/Assets/cat2.jpg';
-import cat3 from './Components/Assets/cat3.jpg';
-import cat4 from './Components/Assets/cat4.jpg';
-import cat5 from './Components/Assets/cat5.jpg';
-import cat6 from './Components/Assets/cat6.jpg';
-import cat7 from './Components/Assets/cat7.jpg';
-import cat8 from './Components/Assets/cat8.jpg';
-import cat9 from './Components/Assets/cat9.jpg';
-import cat10 from './Components/Assets/cat10.jpg';
-
 import './App.css';
+import footprint from './Components/Assets/Images/cat-leg3.png';
 import Card from './Components/Card';
 import { v4 as uuidv4 } from 'uuid';
 import { useState, useEffect } from 'react';
 import { cats } from './ListOfCats';
+import startAudio from './Components/Assets/Audio/start.wav';
+import finalAudio from './Components/Assets/Audio/final.wav';
+import pair from './Components/Assets/Audio/pair.wav';
+import click from './Components/Assets/Audio/click.wav';
+import fail from './Components/Assets/Audio/fail.wav'
 
 function App() {
-  const cats = [
-    { id: 1, name: 'cat1', image: cat1 },
-    { id: 2, name: 'cat1', image: cat1 },
-    { id: 3, name: 'cat2', image: cat2 },
-    { id: 4, name: 'cat2', image: cat2 },
-    { id: 5, name: 'cat3', image: cat3 },
-    { id: 6, name: 'cat3', image: cat3 },
-    { id: 7, name: 'cat4', image: cat4 },
-    { id: 8, name: 'cat4', image: cat4 },
-    { id: 9, name: 'cat5', image: cat5 },
-    { id: 10, name: 'cat5', image: cat5 },
-    { id: 11, name: 'cat6', image: cat6 },
-    { id: 12, name: 'cat6', image: cat6 },
-    { id: 13, name: 'cat7', image: cat7 },
-    { id: 14, name: 'cat7', image: cat7 },
-    { id: 15, name: 'cat8', image: cat8 },
-    { id: 16, name: 'cat8', image: cat8 },
-    { id: 17, name: 'cat9', image: cat9 },
-    { id: 18, name: 'cat9', image: cat9 },
-    { id: 19, name: 'cat10', image: cat10 },
-    { id: 20, name: 'cat10', image: cat10 },
-  ];
-
   const [listOfCats, setListOfCats] = useState([]);
-  const [hideCats, setHideCats] = useState(false);
   const [firstImage, setFirstImage] = useState(null);
   const [secondImage, setSecondImage] = useState(null);
+  const [disabled, setDisabled] = useState(false);
   const [turns, setTurns] = useState(0);
-  
+  const [showAllCats, setShowAllCats] = useState(true);
+  const [pairs, setPairs] = useState(0);
+  const [winText, setWinerText] = useState();
+
+  const newGameAudio = () => {
+    const audio = new Audio(startAudio);
+    audio.play();
+  };
+  const finalGameAudio = () => {
+    const audio = new Audio(finalAudio)
+    audio.play()
+  };
+  const clickAudio = () => {
+    const audio = new Audio(click)
+    audio.play()
+  };
+  const pairAudio = () => {
+    const audio = new Audio(pair)
+    audio.play()
+  };
+  const failAudio = () => {
+    const audio = new Audio(fail)
+    audio.play()
+  };
 
   useEffect(() => {
-    const randomList = cats.sort(() => Math.random() - 0.5)
-    setListOfCats(randomList)
-    const hide = () => {
-      setHideCats(true)
-    };
-    setTimeout(hide, 1000);
-  }, []);
+    randomList()
+  }, [])
+
+  const randomList = () => {
+    const randomize = [...cats, ...cats]
+      .sort(() => Math.random() - 0.5)
+      .map((card) => ({ ...card, id: uuidv4() }))
+    setListOfCats(randomize)
+    setFirstImage(null)
+    setSecondImage(null)
+    setTurns(0)
+    setPairs(0)
+    setWinerText()
+    setTimeout(() => setShowAllCats(false), 1000)
+  }
+
 
   const startNewGame = () => {
-    resetTurns()
-    const randomList = cats.sort(() => Math.random() - 0.5)
-    setListOfCats(randomList)
-    const hide = () => {
-      setHideCats( true)
-    };
-    setTimeout(hide, 1000);
+    newGameAudio()
+    setShowAllCats(true)
+    randomList()
   };
 
   const selectCards = (cat) => {
     firstImage ? setSecondImage(cat) : setFirstImage(cat)
   };
-
+  
+  if (firstImage && !secondImage) {
+    clickAudio()
+  }
   useEffect(() => {
     if (firstImage && secondImage) {
+      setDisabled(true)
       if (firstImage.image === secondImage.image) {
-        console.log("miaw")
+        setListOfCats(prevList => {
+          return prevList.map(card => {
+            if (card.image === firstImage.image) {
+              return { ...card, matched: true }
+            } else {
+              return card
+            }
+          })
+        })
+        pairAudio()
+        resetTurns()
+        setPairs(prevPairs => prevPairs + 1)
       } else {
-        
-      } resetTurns()
+        failAudio()
+        setTimeout(() => resetTurns(), 1000)
+      }
     }
-    console.log(firstImage, secondImage)
   }, [firstImage, secondImage]);
 
   const resetTurns = () => {
-    setTurns(0)
-   
     setFirstImage(null)
     setSecondImage(null)
+    setTurns(prevTurns => prevTurns + 1)
+    setDisabled(false)
   };
+  useEffect(() => {
+    if (pairs === 10) {
+      finalGameAudio()
+      setWinerText("WELL DONE !")
+    }
+  }, [pairs])
+
+
 
   return (
-    <div className='app'>
+    <div className='App'>
+      <img onClick={() => startNewGame()} src={footprint} className='footprint' alt='footprint' />
       <h1 className='title'>FIND THE PAIRS</h1>
-      <button onClick={() => startNewGame()}>Start New Game</button>
-      <div className="game">
-        {listOfCats.map((cat) =>
+      {/* <button className='button' onClick={() => startNewGame()}>Start New Game</button> */}
+      <p className='moves'>Moves :{turns}</p>
+
+      <div className="card-grid">
+        <p className={winText ? 'well-done' : 'well-done-hide'}>{winText}</p>
+        {listOfCats.map((cat) => (
           <Card
+            disabled={disabled}
+            flipped={cat === firstImage || cat === secondImage || cat.matched || showAllCats}
             onSelectCards={selectCards}
             cat={cat}
-            name={cat.name}
             key={cat.id}
-            id={cat.id}
-            image={cat.image}
-            hideCats={hideCats}
           />
-        )}
+        ))}
       </div>
     </div>
   );
+
 };
 
 export default App;
