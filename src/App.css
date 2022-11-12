@@ -3,6 +3,8 @@
 body{
   background-image: url('./Components/Assets/Images/cat-feet.jpg');
   background-size:contain;
+  background-size: cover;
+  background-attachment: fixed;
 }
 
 .App {
@@ -107,4 +109,17 @@ button:hover {
 
 .well-done-hide{
   display: none;
+}
+.left-cat{
+  width: 300px;
+}
+.right-cat{
+  width: 300px;
+}
+.center-card{
+  display: flex;
+}
+.confetti{
+  width: 100%;
+  width: 100%;
 }

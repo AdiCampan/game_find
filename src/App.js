@@ -8,7 +8,11 @@ import startAudio from './Components/Assets/Audio/start.wav';
 import finalAudio from './Components/Assets/Audio/final.wav';
 import pair from './Components/Assets/Audio/pair.wav';
 import click from './Components/Assets/Audio/click.wav';
-import fail from './Components/Assets/Audio/fail.wav'
+import fail from './Components/Assets/Audio/fail.wav';
+import Confetti from 'react-confetti';
+import leftCat from './Components/Assets/Images/big-cat.png';
+import rightCat from './Components/Assets/Images/big-cat2.png';
+
 
 function App() {
   const [listOfCats, setListOfCats] = useState([]);
@@ -19,6 +23,7 @@ function App() {
   const [showAllCats, setShowAllCats] = useState(true);
   const [pairs, setPairs] = useState(0);
   const [winText, setWinerText] = useState();
+  const [winVideo, setWinVideo] = useState(null);
 
   const newGameAudio = () => {
     const audio = new Audio(startAudio);
@@ -40,6 +45,7 @@ function App() {
     const audio = new Audio(fail)
     audio.play()
   };
+
 
   useEffect(() => {
     randomList()
@@ -63,12 +69,14 @@ function App() {
     newGameAudio()
     setShowAllCats(true)
     randomList()
+    setWinVideo(null)
   };
 
   const selectCards = (cat) => {
+    if (cat.id === firstImage?.id) return;
     firstImage ? setSecondImage(cat) : setFirstImage(cat)
   };
-  
+
   if (firstImage && !secondImage) {
     clickAudio()
   }
@@ -103,6 +111,7 @@ function App() {
   };
   useEffect(() => {
     if (pairs === 10) {
+      setWinVideo(1)
       finalGameAudio()
       setWinerText("WELL DONE !")
     }
@@ -112,22 +121,26 @@ function App() {
 
   return (
     <div className='App'>
+      {winVideo &&
+        <Confetti  className='confetti'/>}
       <img onClick={() => startNewGame()} src={footprint} className='footprint' alt='footprint' />
       <h1 className='title'>FIND THE PAIRS</h1>
-      {/* <button className='button' onClick={() => startNewGame()}>Start New Game</button> */}
       <p className='moves'>Moves :{turns}</p>
-
-      <div className="card-grid">
-        <p className={winText ? 'well-done' : 'well-done-hide'}>{winText}</p>
-        {listOfCats.map((cat) => (
-          <Card
-            disabled={disabled}
-            flipped={cat === firstImage || cat === secondImage || cat.matched || showAllCats}
-            onSelectCards={selectCards}
-            cat={cat}
-            key={cat.id}
-          />
-        ))}
+      <div className='center-card'>
+        <img alt='left cat' src={leftCat} className='left-cat' />
+        <div className="card-grid">
+          <p className={winText ? 'well-done' : 'well-done-hide'}>{winText}</p>
+          {listOfCats.map((cat) => (
+            <Card
+              disabled={disabled}
+              flipped={cat === firstImage || cat === secondImage || cat.matched || showAllCats}
+              onSelectCards={selectCards}
+              cat={cat}
+              key={cat.id}
+            />
+          ))}
+        </div>
+        <img alt='right cat' src={rightCat} className='right-cat' />
       </div>
     </div>
   );
